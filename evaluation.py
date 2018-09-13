@@ -53,47 +53,49 @@ def main(groupName, outputDir=os.path.join(tempfile.gettempdir(),"results"), tim
   solutionDir = "../solution";
   #solutionDir = "/tmp/solutionSmall";
   
-  writingTimes = list();
-  beforeInfo = resource.getrusage(resource.RUSAGE_CHILDREN);
-  for repetition in range(0,10):
-    if os.path.exists(workingDir):
-      shutil.rmtree(workingDir)
-    try:
-      result = subprocess.run(["java", "-cp", "build/jar/*:lib/*", "rw2018.statisticsEvaluation.EvaluationWrite", "-i" , inputDir, "-w", workingDir], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout);
-    except subprocess.TimeoutExpired:
-      writeResult(outputDir, [groupName, 'False', 'True', '', '-1', '-1', '-1']);
-      return;
+  try:
+    writingTimes = list();
+    beforeInfo = resource.getrusage(resource.RUSAGE_CHILDREN);
+    for repetition in range(0,10):
+      if os.path.exists(workingDir):
+        shutil.rmtree(workingDir)
+      try:
+        result = subprocess.run(["java", "-cp", "build/jar/*:lib/*", "rw2018.statisticsEvaluation.EvaluationWrite", "-i" , inputDir, "-w", workingDir], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout);
+      except subprocess.TimeoutExpired:
+        writeResult(outputDir, [groupName, 'False', 'True', '', '-1', '-1', '-1']);
+        return;
+      if result.returncode != 0:
+        writeError(outputDir, groupName, result.returncode, convertOutput(result.stderr));
+        writeResult(outputDir, [groupName, 'True', '', '', '-1', '-1', '-1']);
+        return;
+      output = convertOutput(result.stdout);
+      if len(output) > 0:
+        writeOutput(outputDir, groupName, output);
+      afterInfo = resource.getrusage(resource.RUSAGE_CHILDREN);
+      writingTimes.append(float(afterInfo.ru_utime)-float(beforeInfo.ru_utime) + float(afterInfo.ru_stime)-float(beforeInfo.ru_stime));
+      beforeInfo = afterInfo;
+    # measure writing time in seconds.miliseconds
+    writingTimes = sorted(writingTimes[1:len(writingTimes)-1]);
+    writingTime = sum(writingTimes)/len(writingTimes);
+    # measures memory consumption in KBytes
+    selfInfo = resource.getrusage(resource.RUSAGE_SELF);
+    memoryConsumption = int(selfInfo.ru_maxrss);
+    # measure directory size in Bytes
+    dirSize = getSize(workingDir);
+    
+    # check correct solution
+    result = subprocess.run(["java", "-cp", "build/jar/*:lib/*", "rw2018.statisticsEvaluation.CompareResults", "-s", solutionDir, "-i" , inputDir, "-w", workingDir], stdout=subprocess.PIPE, stderr=subprocess.PIPE);
+    areResultsCorrect = True;
     if result.returncode != 0:
       writeError(outputDir, groupName, result.returncode, convertOutput(result.stderr));
-      writeResult(outputDir, [groupName, 'True', '', '', '-1', '-1', '-1']);
-      return;
-    output = convertOutput(result.stdout);
-    if len(output) > 0:
-      writeOutput(outputDir, groupName, output);
-    afterInfo = resource.getrusage(resource.RUSAGE_CHILDREN);
-    writingTimes.append(float(afterInfo.ru_utime)-float(beforeInfo.ru_utime) + float(afterInfo.ru_stime)-float(beforeInfo.ru_stime));
-    beforeInfo = afterInfo;
-  # measure writing time in seconds.miliseconds
-  writingTimes = sorted(writingTimes[1:len(writingTimes)-1]);
-  writingTime = sum(writingTimes)/len(writingTimes);
-  # measures memory consumption in KBytes
-  selfInfo = resource.getrusage(resource.RUSAGE_SELF);
-  memoryConsumption = int(selfInfo.ru_maxrss);
-  # measure directory size in Bytes
-  dirSize = getSize(workingDir);
-  
-  # check correct solution
-  result = subprocess.run(["java", "-cp", "build/jar/*:lib/*", "rw2018.statisticsEvaluation.CompareResults", "-s", solutionDir, "-i" , inputDir, "-w", workingDir], stdout=subprocess.PIPE, stderr=subprocess.PIPE);
-  areResultsCorrect = True;
-  if result.returncode != 0:
-    writeError(outputDir, groupName, result.returncode, convertOutput(result.stderr));
-    areResultsCorrect = False;
-  
-  # write results
-  writeResult(outputDir, [groupName, 'False', 'False', str(areResultsCorrect), str(writingTime), str(memoryConsumption), str(dirSize)]);  
-  
-  # remove data
-  shutil.rmtree(workingDir)
+      areResultsCorrect = False;
+    
+    # write results
+    writeResult(outputDir, [groupName, 'False', 'False', str(areResultsCorrect), str(writingTime), str(memoryConsumption), str(dirSize)]);  
+  finally:
+    # remove data
+    if os.path.exists(workingDir):
+      shutil.rmtree(workingDir)
 
 if __name__ == "__main__":
   # stuff only to run when not called via 'import' here
