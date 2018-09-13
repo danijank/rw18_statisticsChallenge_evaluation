@@ -49,9 +49,9 @@ def main(groupName, outputDir=os.path.join(tempfile.gettempdir(),"results"), tim
     os.makedirs(outputDir);
   workingDir = os.path.join(tempfile.gettempdir(),"statistics_"+groupName);
   inputDir = "../chunks";
-  #inputDir = "/home/janke/Dokumente/Promotion/conferences/ReasoningWebSummerSchool2018/miniExample/";
+  #inputDir = "/home/janke/Dokumente/Promotion/conferences/ReasoningWebSummerSchool2018/chunks-500K";
   solutionDir = "../solution";
-  #solutionDir = "/tmp/solutionSmall";
+  #solutionDir = "/home/janke/Dokumente/Promotion/conferences/ReasoningWebSummerSchool2018/test/";
   
   try:
     writingTimes = list();
