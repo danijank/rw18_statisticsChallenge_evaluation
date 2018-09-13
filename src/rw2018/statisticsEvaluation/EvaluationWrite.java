@@ -10,6 +10,7 @@ import org.apache.commons.cli.ParseException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import rw2018.statistics.StatisticsDB;
 import rw2018.statistics.TriplePosition;
@@ -88,7 +89,9 @@ public class EvaluationWrite {
       File workingDir = new File(cLine.getOptionValue('w'));
       File inputDir = new File(cLine.getOptionValue('i'));
 
-      EvaluationWrite.collectStatistics(workingDir, inputDir.listFiles());
+      File[] chunks = inputDir.listFiles();
+      Arrays.sort(chunks);
+      EvaluationWrite.collectStatistics(workingDir, chunks);
 
     } catch (ParseException e) {
       EvaluationWrite.printUsage(options);
