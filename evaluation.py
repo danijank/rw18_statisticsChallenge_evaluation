@@ -40,23 +40,18 @@ def writeResult(outputDir, line):
     writer = csv.writer(csvfile);
     writer.writerow(line);
 
-def main(groupName, timeout):
+def main(groupName, outputDir=os.path.join(tempfile.gettempdir(),"results"), timeout=60):
   # adjust call dir
   callDir = os.path.dirname(os.path.realpath(__file__));
   os.chdir(callDir);
   
-  #TODO remove
-  # build project
-  result = subprocess.run(["ant"], stdout=subprocess.PIPE, stderr=subprocess.PIPE);
-  
-  outputDir = os.path.join(tempfile.gettempdir(),"results");
   if not os.path.exists(outputDir):
     os.makedirs(outputDir);
   workingDir = os.path.join(tempfile.gettempdir(),"statistics_"+groupName);
-  #inputDir = "../chunks";
-  inputDir = "/home/janke/Dokumente/Promotion/conferences/ReasoningWebSummerSchool2018/miniExample/";
-  #solutionDir = "../solution";
-  solutionDir = "/tmp/solutionSmall";
+  inputDir = "../chunks";
+  #inputDir = "/home/janke/Dokumente/Promotion/conferences/ReasoningWebSummerSchool2018/miniExample/";
+  solutionDir = "../solution";
+  #solutionDir = "/tmp/solutionSmall";
   
   writingTimes = list();
   beforeInfo = resource.getrusage(resource.RUSAGE_CHILDREN);
@@ -100,8 +95,10 @@ def main(groupName, timeout):
   # remove data
   shutil.rmtree(workingDir)
 
-args = sys.argv;
-if len(args) < 1 + 1:
-  print("Missing arguments. Usage: python3 evaluation.py <groupName>");
-else:
- main(args[1],timeout=60);
+if __name__ == "__main__":
+  # stuff only to run when not called via 'import' here
+  args = sys.argv;
+  if len(args) < 1 + 2:
+    print("Missing arguments. Usage: python3 evaluation.py <groupName> <outputDir>");
+  else:
+    main(args[1],args[2],timeout=60);

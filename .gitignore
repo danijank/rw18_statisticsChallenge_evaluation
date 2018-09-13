@@ -1,4 +1,5 @@
 .settings/
 build/
 bin/
+__pycache__/
 lib/*.jar
