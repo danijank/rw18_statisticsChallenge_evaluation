@@ -78,7 +78,7 @@ def main(groupsCSV="groups.csv",workingDir=os.path.join(tempfile.gettempdir(),"b
         print("  evaluation failed");
         continue;
       print("  evaluation succeeded");
-  generateResults.main();
+  generateResults.main(os.path.join(outputDir,'results.csv'),outputDir);
   
   
 if __name__ == "__main__":

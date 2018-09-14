@@ -90,7 +90,7 @@ def createPlot(data, ylabel, filename):
   plt.savefig(filename);
   plt.close();
 
-def main(resultCSV=os.path.abspath(os.path.join(os.getcwd(), os.pardir,"results","results.csv")), outputDir=os.path.abspath(os.path.join(os.getcwd(), os.pardir,"results"))):
+def main(resultCSV=os.path.abspath(os.path.join(os.getcwd(),"results","results.csv")), outputDir=os.path.abspath(os.path.join(os.getcwd(),"results"))):
   # adjust call dir
   callDir = os.path.dirname(os.path.realpath(__file__));
   os.chdir(callDir);
