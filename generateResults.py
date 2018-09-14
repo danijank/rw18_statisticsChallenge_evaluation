@@ -4,6 +4,8 @@ import sys;
 import os;
 import csv;
 import functools;
+import matplotlib;
+matplotlib.use('Agg');
 import matplotlib.pyplot as plt;
 
 def addToResults(results, baseline, candidate):

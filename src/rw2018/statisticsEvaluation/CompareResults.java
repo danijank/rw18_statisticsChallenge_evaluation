@@ -24,7 +24,7 @@ public class CompareResults {
 
   public static void compareStatistics(File solutionDir, int numberOfChunks, File workingDir) {
     try (StatisticsDB solution = new StatisticsDBBaseImpl();
-            StatisticsDB candidate = new StatisticsDBBaseImpl();
+            StatisticsDB candidate = new rw2018.statistics.impl.StatisticsDBBaseImpl();
     // TODO activate
     // StatisticsDB candidate = new StatisticsDBImpl();
     ) {

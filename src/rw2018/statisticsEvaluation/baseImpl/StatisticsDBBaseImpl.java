@@ -100,6 +100,7 @@ public class StatisticsDBBaseImpl implements StatisticsDB {
       for (int i = 0; i < getTriplePositions().length; i++) {
         if (getTriplePositions()[i] == triplePosition) {
           indexOfTriplePosition = i;
+          break;
         } else {
           columnNumber += numberOfChunks;
         }
@@ -116,7 +117,14 @@ public class StatisticsDBBaseImpl implements StatisticsDB {
         return statistics.readLong();
       } catch (EOFException e) {
         // the resource did not exist in the file yet
-        return -1;
+        if (statistics.length() >= ((resourceId - 1) * sizeOfRow)) {
+          // the resource exists but does not have a value for the current
+          // element
+          return 0;
+        } else {
+          // the resource does not exist
+          return -1;
+        }
       }
 
     } catch (IOException e) {
