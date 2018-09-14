@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.Arrays;
 
 import rw2018.statistics.StatisticsDB;
+import rw2018.statistics.impl.StatisticsDBImpl;
 import rw2018.statisticsEvaluation.baseImpl.StatisticsDBBaseImpl;
 
 /**
@@ -24,10 +25,7 @@ public class CompareResults {
 
   public static void compareStatistics(File solutionDir, int numberOfChunks, File workingDir) {
     try (StatisticsDB solution = new StatisticsDBBaseImpl();
-            StatisticsDB candidate = new rw2018.statistics.impl.StatisticsDBBaseImpl();
-    // TODO activate
-    // StatisticsDB candidate = new StatisticsDBImpl();
-    ) {
+            StatisticsDB candidate = new StatisticsDBImpl();) {
       solution.setUp(solutionDir, numberOfChunks);
       candidate.setUp(workingDir, numberOfChunks);
 

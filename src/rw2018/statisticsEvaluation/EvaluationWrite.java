@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 import rw2018.statistics.StatisticsDB;
 import rw2018.statistics.TriplePosition;
-import rw2018.statistics.impl.StatisticsDBBaseImpl;
+import rw2018.statistics.impl.StatisticsDBImpl;
 import rw2018.statistics.io.EncodedFileInputStream;
 import rw2018.statistics.io.EncodingFileFormat;
 import rw2018.statistics.io.Statement;
@@ -36,10 +36,7 @@ public class EvaluationWrite {
       statisticsDir.mkdirs();
     }
 
-    try (StatisticsDB statisticsDB = new StatisticsDBBaseImpl();
-    // TODO activate
-    // StatisticsDB statisticsDB = new StatisticsDBImpl();
-    ) {
+    try (StatisticsDB statisticsDB = new StatisticsDBImpl();) {
       statisticsDB.setUp(statisticsDir, chunks.length);
 
       for (int chunkI = 0; chunkI < chunks.length; chunkI++) {
