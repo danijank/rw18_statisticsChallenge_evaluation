@@ -8,6 +8,7 @@ import shutil;
 import subprocess;
 import csv;
 import evaluation;
+import generateResults;
 
 def build(groupName, url, workingDir, outputDir):
   oldDir = os.getcwd();
@@ -77,7 +78,7 @@ def main(groupsCSV="groups.csv",workingDir=os.path.join(tempfile.gettempdir(),"b
         print("  evaluation failed");
         continue;
       print("  evaluation succeeded");
-      
+  generateResults.main();
   
   
 if __name__ == "__main__":
