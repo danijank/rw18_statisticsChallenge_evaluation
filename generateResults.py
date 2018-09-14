@@ -79,14 +79,10 @@ def createPlot(data, ylabel, filename):
     ymax = 10.;
   if ymax in barData:
     ymax += 5;
-  if ymax > 100.:
-    ymax = 100.;
   if ymin > -10.:
     ymin = -10.;
   if ymin in barData:
     ymin -= 5;
-  if ymin < -100.:
-    ymin = -100.;
   plt.ylim(ymin,ymax);
   plt.tight_layout();
   plt.savefig(filename);
