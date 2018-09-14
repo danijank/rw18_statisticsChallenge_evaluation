@@ -35,7 +35,7 @@ def writeResult(outputDir, line):
   if not os.path.exists(resultCSV):
     with open(resultCSV, 'w', newline='') as csvfile:
       writer = csv.writer(csvfile);
-      writer.writerow(['group','hasError','hasTimeout','areResultsCorrect','avg. writing time (in msec)','memory consumption (in KBytes)', 'disk space (in Byte)']);
+      writer.writerow(['group','hasBuildError','hasExecutionError','hasTimeout','areResultsCorrect','avg. writing time (in msec)','memory consumption (in KBytes)', 'disk space (in Byte)']);
   with open(resultCSV, 'a+', newline='') as csvfile:
     writer = csv.writer(csvfile);
     writer.writerow(line);
@@ -62,11 +62,11 @@ def main(groupName, outputDir=os.path.join(tempfile.gettempdir(),"results"), tim
       try:
         result = subprocess.run(["java", "-cp", "build/jar/*:lib/*", "rw2018.statisticsEvaluation.EvaluationWrite", "-i" , inputDir, "-w", workingDir], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout);
       except subprocess.TimeoutExpired:
-        writeResult(outputDir, [groupName, 'False', 'True', '', '-1', '-1', '-1']);
+        writeResult(outputDir, [groupName, 'False', 'False', 'True', '', '-1', '-1', '-1']);
         return;
       if result.returncode != 0:
         writeError(outputDir, groupName, result.returncode, convertOutput(result.stderr));
-        writeResult(outputDir, [groupName, 'True', '', '', '-1', '-1', '-1']);
+        writeResult(outputDir, [groupName, 'False', 'True', '', '', '-1', '-1', '-1']);
         return;
       output = convertOutput(result.stdout);
       if len(output) > 0:
@@ -91,7 +91,7 @@ def main(groupName, outputDir=os.path.join(tempfile.gettempdir(),"results"), tim
       areResultsCorrect = False;
     
     # write results
-    writeResult(outputDir, [groupName, 'False', 'False', str(areResultsCorrect), str(writingTime), str(memoryConsumption), str(dirSize)]);  
+    writeResult(outputDir, [groupName, 'False', 'False', 'False', str(areResultsCorrect), str(writingTime), str(memoryConsumption), str(dirSize)]);  
   finally:
     # remove data
     if os.path.exists(workingDir):

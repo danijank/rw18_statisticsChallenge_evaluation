@@ -66,6 +66,7 @@ def main(groupsCSV="groups.csv",workingDir=os.path.join(tempfile.gettempdir(),"b
       print("group: "+groupName);
       returnValue = build(groupName,url,workingDir,outputDir);
       if returnValue != 0:
+        evaluation.writeResult(outputDir, [groupName, 'True', '', '', '', '-1', '-1', '-1']);
         print("  build failed!");
         continue;
       print("  build finished")
